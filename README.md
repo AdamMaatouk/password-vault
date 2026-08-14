@@ -11,3 +11,7 @@ A lightweight, secure desktop password vault built in Python featuring 256-bit A
 * **Python**
 * **Cryptography / Fernet**
 * **Tkinter / GUI**
+
+## 💾 Downloads
+Want to test the desktop version without running source code? 
+👉 **[Download PassVault v1.0.0 for Windows](../../releases/tag/v1.0.0)**
