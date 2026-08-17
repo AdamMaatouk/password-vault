@@ -1,9 +1,23 @@
+# Byte-compiled / Python cache
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Environments
 venv/
+.venv/
+env/
+ENV/
+
+# Configuration & local secrets
 .env
-dist/
-build/
-*.exe
 vault.json
-PassVault/_internal/
+
+# PyInstaller build outputs & specs
+build/
+dist/
+*.spec
+
+# Binaries
+*.exe

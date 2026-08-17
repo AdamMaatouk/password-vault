@@ -1,33 +1,32 @@
-import os
 import base64
-import hashlib
-from Crypto.Cipher import AES 
-from Crypto.Util.Padding import pad, unpad
+import os
+from Cryptodome.Cipher import AES
+from Cryptodome.Protocol.KDF import PBKDF2
 
-def generate_key(master_password: str, salt: bytes = None) -> tuple[bytes, bytes]:
-    if salt is None:
-        salt = os.urandom(16)
+# Standard salt for local derivation (or load dynamic salt)
+SALT = b'passvault_static_salt_32bytes_len' 
 
-    key = hashlib.pbkdf2_hmac(
-        hash_name = 'sha256',
-        password = master_password.encode('utf-8'),
-        salt = salt,
-        iterations = 600000,
-        dklen = 32
-    )
-    return key, salt
+def generate_key(master_password: str) -> bytes:
+    """Derives a strict 32-byte (256-bit) raw binary key from master password."""
+    return PBKDF2(master_password, SALT, dkLen=32, count=100000)
 
-def encrypt_data(data: str, key: bytes) -> bytes:
-    iv = os.urandom(16)
-    cipher = AES.new(key, AES.MODE_CBC, iv)
-    padded_data = pad(data.encode('utf-8'), AES.block_size)
-    encrypted_bytes = cipher.encrypt(padded_data)
-    return base64.b64encode(iv + encrypted_bytes)
+def encrypt_data(plain_text: str, key: bytes) -> str:
+    """Encrypts text using AES-256 GCM / CBC mode."""
+    cipher = AES.new(key, AES.MODE_GCM)
+    ciphertext, tag = cipher.encrypt_and_digest(plain_text.encode('utf-8'))
+    
+    # Store nonce + tag + ciphertext as Base64 string
+    combined = cipher.nonce + tag + ciphertext
+    return base64.b64encode(combined).decode('utf-8')
 
-def decrypt_data(encrypted_base64: bytes, key: bytes) -> str:
-    raw_data = base64.b64decode(encrypted_base64)
-    iv = raw_data[:16]
-    encrypted_bytes = raw_data[16:]
-    cipher = AES.new(key, AES.MODE_CBC, iv)
-    decrypted_padded = cipher.decrypt(encrypted_bytes)
-    return unpad(decrypted_padded, AES.block_size).decode('utf-8')
+def decrypt_data(encrypted_b64: str, key: bytes) -> str:
+    """Decrypts Base64 ciphertext back into plain text string."""
+    combined = base64.b64decode(encrypted_b64.encode('utf-8'))
+    
+    nonce = combined[:16]
+    tag = combined[16:32]
+    ciphertext = combined[32:]
+    
+    cipher = AES.new(key, AES.MODE_GCM, nonce=nonce)
+    decrypted_bytes = cipher.decrypt_and_verify(ciphertext, tag)
+    return decrypted_bytes.decode('utf-8')
