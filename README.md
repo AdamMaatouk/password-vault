@@ -21,7 +21,7 @@ Built with Flutter, PassVault Mobile provides a responsive, dark-themed experien
 * **Adaptive Launcher Icon:** Native Android adaptive icon support.
 
 ### Download & Install (Android)
-1. Go to the latest **[PassVault Mobile v1.0.0 Release](../../releases/latest)** page.
+1. Go to the latest **[PassVault Mobile v1.2.0 Release](../../releases/latest)** page.
 2. Download `PassVault.apk`.
 3. Open the file on your Android device and allow **Install from unknown sources** if prompted.
 
