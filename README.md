@@ -46,6 +46,38 @@ A standalone Windows application engineered with Python and CustomTkinter for of
 ## 🛠️ Building From Source
 
 Clone the repository:
+
 ```bash
-git clone [https://github.com/AdamMaatouk/password-vault.git](https://github.com/AdamMaatouk/password-vault.git)
+git clone https://github.com/AdamMaatouk/password-vault.git
 cd password-vault
+```
+
+### Desktop (Windows)
+
+Requires Python 3.10 or newer.
+
+```bash
+pip install -r requirements.txt
+python modern_gui.py
+```
+
+To package it as a single Windows executable:
+
+```bash
+pip install pyinstaller
+pyinstaller --onefile --windowed --icon app_logo.ico --name PassVault modern_gui.py
+```
+
+### Mobile (Android)
+
+The Android app is distributed as an APK on the [Releases](../../releases) page. Its source code is not part of this repository yet.
+
+---
+
+## 🔒 Security notes
+
+PassVault stores everything locally and never sends data over the network. Your master password is never stored: it is used to derive the encryption key. If you forget it, the vault cannot be recovered.
+
+## License
+
+[MIT](LICENSE) © 2026 Adam Maatouk
